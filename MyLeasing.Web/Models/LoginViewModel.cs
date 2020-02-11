@@ -10,6 +10,7 @@ namespace MyVet.Web.Models
 
         [Required]
         [MinLength(6)]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         public bool RememberMe { get; set; }

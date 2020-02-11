@@ -19,7 +19,6 @@ namespace MyVet.Web.Data.Entities
         public string Race { get; set; }
 
         [Required(ErrorMessage = "The field {0} is mandatory")]
-        [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime Born { get; set; }
 

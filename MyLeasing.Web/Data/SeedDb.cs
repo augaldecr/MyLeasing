@@ -107,7 +107,7 @@ namespace MyVet.Web.Data
             }
         }
 
-        private async Task CheckHistoriesAsync()
+        private Task CheckHistoriesAsync()
         {
             throw new NotImplementedException();
         }
