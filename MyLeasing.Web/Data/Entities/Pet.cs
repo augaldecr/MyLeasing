@@ -28,7 +28,7 @@ namespace MyVet.Web.Data.Entities
 
         public string ImageFullPath => string.IsNullOrEmpty(ImageUrl)
             ? null
-            : $"https://TBD.azurewebsites.net/{ImageUrl.Substring(1)}";
+            : $"https://myvetalonso.azurewebsites.net/{ImageUrl.Substring(1)}";
 
         [Display(Name = "Born")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}")]

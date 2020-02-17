@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyVet.Common.Models;
 using MyVet.Web.Data;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +11,7 @@ namespace MyVet.Web.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OwnersController : ControllerBase
     {
         private readonly DataContext _dataContext;
@@ -24,27 +25,21 @@ namespace MyVet.Web.Controllers.API
         [Route("GetOwnerByEmail")]
         public async Task<IActionResult> GetOwner(EmailRequest emailRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var owner = await _dataContext.Owners
+            Data.Entities.Owner owner = await _dataContext.Owners
                 .Include(o => o.User)
                 .Include(o => o.Pets)
                 .ThenInclude(p => p.PetType)
                 .Include(o => o.Pets)
                 .ThenInclude(p => p.Histories)
                 .ThenInclude(h => h.ServiceType)
-                .FirstOrDefaultAsync(o => o.User.UserName.ToLower() == emailRequest.Email.ToLower());
+                .FirstOrDefaultAsync(o => o.User.UserName.ToLower().Equals(emailRequest.Email.ToLower()));
 
-            var response = new OwnerResponse
+            OwnerResponse response = new OwnerResponse
             {
-                Id = owner.Id,
                 FirstName = owner.User.FirstName,
                 LastName = owner.User.LastName,
-                Document = owner.User.Document,
                 Address = owner.User.Address,
+                Document = owner.User.Document,
                 Email = owner.User.Email,
                 PhoneNumber = owner.User.PhoneNumber,
                 Pets = owner.Pets.Select(p => new PetResponse
@@ -62,7 +57,7 @@ namespace MyVet.Web.Controllers.API
                         Description = h.Description,
                         Id = h.Id,
                         Remarks = h.Remarks,
-                        ServiceType = h.ServiceType.Name,
+                        ServiceType = h.ServiceType.Name
                     }).ToList()
                 }).ToList()
             };
